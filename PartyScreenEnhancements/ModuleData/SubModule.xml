@@ -3,15 +3,16 @@
 <Module>
 	<Name value="Party Screen Enhancements" />
 	<Id value="PartyScreenEnhancements" />
-	<Version value="v1.6.11" />
+	<Version value="v1.2.8.1" />
 	<SingleplayerModule value="true" />
 	<MultiplayerModule value="false" />
 	<DependedModules>
-		<DependedModule Id="Native" DependentVersion="v1.0.0"/>
-		<DependedModule Id="SandBoxCore" DependentVersion="v1.0.0"/>
-		<DependedModule Id="Sandbox" DependentVersion="v1.0.0"/>
-		<DependedModule Id="CustomBattle" DependentVersion="v1.0.0"/>
-		<DependedModule Id="StoryMode" DependentVersion="v1.0.0"/>
+		<DependedModule Id="Native" />
+		<DependedModule Id="SandBoxCore" />
+		<DependedModule Id="Sandbox" />
+		<DependedModule Id="CustomBattle" />
+		<DependedModule Id="StoryMode" />
+		<DependedModule Id="Bannerlord.Harmony" />
 	</DependedModules>
 	<SubModules>
 		<SubModule>

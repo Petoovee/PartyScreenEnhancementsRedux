@@ -1,5 +1,4 @@
 ﻿using PartyScreenEnhancements.Saving;
-using TaleWorlds.Core;
 using TaleWorlds.Library;
 
 namespace PartyScreenEnhancements.ViewModel.Settings.Tabs.Miscellaneous
