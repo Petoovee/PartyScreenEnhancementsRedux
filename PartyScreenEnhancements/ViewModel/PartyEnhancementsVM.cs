@@ -7,11 +7,9 @@ using System;
 using System.ComponentModel;
 using System.Linq;
 using TaleWorlds.CampaignSystem.Party;
-using TaleWorlds.CampaignSystem.ViewModelCollection;
 using TaleWorlds.CampaignSystem.ViewModelCollection.Party;
 using TaleWorlds.CampaignSystem.ViewModelCollection.Party.PartyTroopManagerPopUp;
 using TaleWorlds.Core;
-using TaleWorlds.Core.ViewModelCollection;
 using TaleWorlds.Core.ViewModelCollection.Information;
 using TaleWorlds.Engine.GauntletUI;
 using TaleWorlds.GauntletUI.Data;
@@ -31,7 +29,6 @@ namespace PartyScreenEnhancements.ViewModel
         private readonly PartyVM _partyVM;
         private readonly PartyScreenLogic _partyScreenLogic;
 
-        private SortAllTroopsVM _sortTroopsVM;
         private UpgradeAllTroopsVM _upgradeTroopsVM;
         private RecruitPrisonerVM _recruitPrisonerVm;
         private SettingScreenVM _settingScreenVm;
@@ -54,7 +51,6 @@ namespace PartyScreenEnhancements.ViewModel
             _parentScreen = parentScreen;
             _settingsHint = new HintViewModel(new TextObject("PSE Settings"));
 
-            _sortTroopsVM = new SortAllTroopsVM(_partyVM, _partyScreenLogic);
             _upgradeTroopsVM = new UpgradeAllTroopsVM(this, _partyVM, _partyScreenLogic);
             _recruitPrisonerVm = new RecruitPrisonerVM(this, _partyVM, _partyScreenLogic);
             _unitTallyVm = new UnitTallyVM(partyVM.MainPartyTroops, partyVM.OtherPartyTroops, partyScreenLogic, _partyScreenLogic?.LeftOwnerParty?.MobileParty?.IsGarrison ?? false);
@@ -113,7 +109,6 @@ namespace PartyScreenEnhancements.ViewModel
         {
             base.RefreshValues();
 
-            if (PartyScreenConfig.ExtraSettings.AutomaticSorting) _sortTroopsVM.SortTroops();
             UpdateLabel(null);
 
             _unitTallyVm.RefreshValues();
@@ -128,12 +123,10 @@ namespace PartyScreenEnhancements.ViewModel
             _unitTallyVm.OnFinalize();
             _recruitPrisonerVm.OnFinalize();
             _upgradeTroopsVM.OnFinalize();
-            _sortTroopsVM.OnFinalize();
 
             _unitTallyVm = null;
             _recruitPrisonerVm = null;
             _upgradeTroopsVM = null;
-            _sortTroopsVM = null;
         }
 
         /*
@@ -274,19 +267,6 @@ namespace PartyScreenEnhancements.ViewModel
             }
         }
 
-        [DataSourceProperty]
-        public SortAllTroopsVM SortAllTroops
-        {
-            get => _sortTroopsVM;
-            set
-            {
-                if (value != _sortTroopsVM)
-                {
-                    _sortTroopsVM = value;
-                    OnPropertyChanged(nameof(SortAllTroops));
-                }
-            }
-        }
 
         [DataSourceProperty]
         public UnitTallyVM UnitTally

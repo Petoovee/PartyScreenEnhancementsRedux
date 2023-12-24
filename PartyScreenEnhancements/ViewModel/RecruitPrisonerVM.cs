@@ -107,7 +107,7 @@ namespace PartyScreenEnhancements.ViewModel
             {
                 PartyScreenLogic.PartyCommand partyCommand = new PartyScreenLogic.PartyCommand();
                 partyCommand.FillForRecruitTroop(character.Side, character.Type,
-                    character.Character, number);
+                    character.Character, number, 0);
 
                 _partyLogic.AddCommand(partyCommand);
 

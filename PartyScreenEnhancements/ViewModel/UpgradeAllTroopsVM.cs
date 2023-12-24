@@ -199,7 +199,7 @@ namespace PartyScreenEnhancements.ViewModel
         private void SendCommand(PartyCharacterVM character, int amount, int target)
         {
             var partyCommand = new PartyScreenLogic.PartyCommand();
-            partyCommand.FillForUpgradeTroop(character.Side, character.Type, character.Character, amount, target);
+            partyCommand.FillForUpgradeTroop(character.Side, character.Type, character.Character, amount, target, 0);
             _partyVM.CurrentCharacter = character;
             _partyLogic.AddCommand(partyCommand);
         }

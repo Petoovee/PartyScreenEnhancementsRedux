@@ -1,5 +1,4 @@
-﻿using PartyScreenEnhancements.Comparers;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Xml.Serialization;
 
@@ -14,7 +13,6 @@ namespace PartyScreenEnhancements.Saving
         public event PropertyChangedEventHandler PropertyChanged;
 
         private bool _displayCategory;
-        private bool _separateSorting = true;
         private bool _shouldShowCompletePartyNumber;
 
         [XmlElement("GeneralLog")] public bool ShowGeneralLogMessage { get; set; } = true;
@@ -34,21 +32,6 @@ namespace PartyScreenEnhancements.Saving
 
         [XmlElement("HalfHalfUpgrades")] public bool EqualUpgrades { get; set; }
 
-        [XmlElement("SeparateSortingProfiles")]
-        public bool SeparateSortingProfiles
-        {
-            get => _separateSorting;
-            set
-            {
-                _separateSorting = value;
-                OnPropertyChanged();
-            }
-        }
-
-        [XmlElement("AutomaticSorting")] public bool AutomaticSorting { get; set; }
-
-        [XmlElement("KeepHeroesOnTop")] public bool KeepHeroesOnTop { get; set; } = true;
-
         [XmlElement("ShouldShowCompletePartyNumber")]
         public bool ShouldShowCompletePartyNumber
         {
@@ -61,13 +44,6 @@ namespace PartyScreenEnhancements.Saving
         }
 
         [XmlElement("UpgradeTooltips")] public bool PathSelectTooltips { get; set; } = true;
-
-        [XmlElement("PartySorter")] public PartySort PartySorter { get; set; } = PartyScreenConfig.DefaultSorter;
-
-        [XmlElement("PrisonerSorter")] public PartySort PrisonerSorter { get; set; } = PartyScreenConfig.DefaultSorter;
-
-        [XmlElement("GarrisonSorter")]
-        public PartySort GarrisonAndAlliedPartySorter { get; set; } = PartyScreenConfig.DefaultSorter;
 
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {

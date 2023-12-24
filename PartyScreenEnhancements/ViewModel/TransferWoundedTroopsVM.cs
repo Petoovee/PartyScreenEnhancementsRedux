@@ -46,7 +46,7 @@ namespace PartyScreenEnhancements.ViewModel
                         if (character.IsTroopTransferrable)
                         {
                             int wounded = Math.Min(character.WoundedCount, character.Number);
-                            character.OnTransfer(character, -1, wounded, character.Side);
+                            PartyCharacterVM.OnTransfer(character, -1, wounded, character.Side);
                             character.InitializeUpgrades();
                         }
                     }

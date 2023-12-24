@@ -1,5 +1,4 @@
 ﻿using HarmonyLib;
-using PartyScreenEnhancements.Comparers;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -22,7 +21,6 @@ namespace PartyScreenEnhancements.Saving
 
         internal static Dictionary<string, int> PathsToUpgrade = new Dictionary<string, int>();
         internal static Dictionary<string, int> PrisonersToRecruit = new Dictionary<string, int>();
-        internal static PartySort DefaultSorter = new TypeComparer(new TrueTierComparer(new AlphabetComparer(null, false), true), false);
         internal static ExtraSettings ExtraSettings = new ExtraSettings();
 
         private static readonly string _FILENAME = Directories.GetConfigPathForFile("PartyScreenEnhancements.xml");

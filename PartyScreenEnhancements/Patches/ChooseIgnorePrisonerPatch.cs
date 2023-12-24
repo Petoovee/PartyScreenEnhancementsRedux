@@ -1,9 +1,7 @@
 ﻿using HarmonyLib;
 using PartyScreenEnhancements.Saving;
 using SandBox.GauntletUI;
-using TaleWorlds.CampaignSystem.ViewModelCollection;
 using TaleWorlds.CampaignSystem.ViewModelCollection.Party;
-using TaleWorlds.Core;
 using TaleWorlds.Library;
 using TaleWorlds.ScreenSystem;
 
