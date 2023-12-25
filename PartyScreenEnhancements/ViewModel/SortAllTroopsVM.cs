@@ -100,6 +100,7 @@ namespace PartyScreenEnhancements.ViewModel
 
             // Sort the list, this is done for the visual unit cards to be properly positioned after the sort
             // This is not yet persisted to the actual roster, that is done after this.
+            
             toSort.StableSort(sorter);
 
             // Sanity check to ensure the leader is *always* at the top of the party.

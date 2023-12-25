@@ -239,14 +239,29 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="TaleWorlds.ScreenSystem">
-      <HintPath>C:\Games\steamapps\common\Mount &amp; Blade II Bannerlord\bin\Win64_Shipping_Client\TaleWorlds.ScreenSystem.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="TaleWorlds.ScreenSystem">
       <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Mount &amp; Blade II Bannerlord\bin\Win64_Shipping_Client\TaleWorlds.ScreenSystem.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Comparers\AlphabetComparer.cs" />
+    <Compile Include="Comparers\BasicTypeComparer.cs" />
+    <Compile Include="Comparers\CultureComparer.cs" />
+    <Compile Include="Comparers\LevelComparer.cs" />
+    <Compile Include="Comparers\NumberComparer.cs" />
+    <Compile Include="Comparers\PartySort.cs" />
+    <Compile Include="Comparers\TrueTierComparer.cs" />
+    <Compile Include="Comparers\TypeComparer.cs" />
+    <Compile Include="Comparers\UpgradeableComparer.cs" />
+    <Compile Include="Comparers\WoundedComparer.cs" />
+    <Compile Include="Patches\MBBindingListExtensions.cs" />
+    <Compile Include="ViewModel\Settings\SortingOrders\SettingSortingOrderScreenVM.cs" />
+    <Compile Include="ViewModel\Settings\SortingOrders\SettingSortingOrderVM.cs" />
+    <Compile Include="ViewModel\Settings\Tabs\Sorting\SettingSide.cs" />
+    <Compile Include="ViewModel\Settings\Tabs\Sorting\SettingSorterOverlayVM.cs" />
+    <Compile Include="ViewModel\Settings\Tabs\Sorting\SettingSorterPaneVM.cs" />
+    <Compile Include="ViewModel\Settings\Tabs\Sorting\SettingSortVM.cs" />
+    <Compile Include="ViewModel\SortAllTroopsVM.cs" />
+    <Compile Include="Widgets\SettingSortWidget.cs" />
     <Content Include="ModuleData\GUI\Prefabs\Party\PSERecruitPopup.xml" />
     <Content Include="ModuleData\GUI\Prefabs\Party\PSEUpgradePopup.xml" />
     <Content Include="ModuleData\GUI\Prefabs\Settings\General\PartyEnhancementGeneralTab.xml" />
