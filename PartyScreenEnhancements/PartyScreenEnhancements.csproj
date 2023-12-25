@@ -33,8 +33,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="0Harmony, Version=2.2.2.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Lib.Harmony.2.2.2\lib\net472\0Harmony.dll</HintPath>
+    <Reference Include="0Harmony, Version=0.0.59056.473, Culture=neutral">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Mount &amp; Blade II Bannerlord\Modules\Bannerlord.Harmony\bin\Win64_Shipping_Client\0Harmony.dll</HintPath>
+    </Reference>
+    <Reference Include="Bannerlord.Harmony">
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Mount &amp; Blade II Bannerlord\Modules\Bannerlord.Harmony\bin\Win64_Shipping_Client\Bannerlord.Harmony.dll</HintPath>
     </Reference>
     <Reference Include="SandBox">
       <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Mount &amp; Blade II Bannerlord\Modules\SandBox\bin\Win64_Shipping_Client\SandBox.dll</HintPath>
@@ -250,7 +254,6 @@
     <Content Include="ModuleData\GUI\Prefabs\Settings\PartyEnhancementSettings.xml" />
     <Compile Include="Logging.cs" />
     <Compile Include="Patches\ChooseIgnorePrisonerPatch.cs" />
-    <Compile Include="Patches\MBBindingListExtensions.cs" />
     <Compile Include="Patches\PartyEnhancementLayerPatch.cs" />
     <Compile Include="Patches\ChooseUpgradePathPatch.cs" />
     <Compile Include="Patches\PopupPatch.cs" />
@@ -287,9 +290,6 @@
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Connected Services\" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

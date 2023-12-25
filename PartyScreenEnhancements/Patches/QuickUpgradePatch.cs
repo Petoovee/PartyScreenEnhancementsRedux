@@ -1,5 +1,5 @@
 ﻿using HarmonyLib;
-using TaleWorlds.CampaignSystem.ViewModelCollection;
+using PartyScreenEnhancements.Saving;
 using TaleWorlds.CampaignSystem.ViewModelCollection.Party;
 
 namespace PartyScreenEnhancements.Patches
@@ -30,6 +30,18 @@ namespace PartyScreenEnhancements.Patches
                 // Upgrade all troops, don't just upgrade paths set by user.
                 PartyEnhancementLayerPatch.enhancementVm.RecruitAllPrisoners.RecruitAll();
                 return false;
+            }
+
+            return true;
+        }
+
+        [HarmonyPrefix]
+        [HarmonyPatch("ExecuteDone")]
+        public static bool PrefixDone(ref PartyVM __instance)
+        {
+            if (PartyScreenConfig.ExtraSettings.UpgradeOnDone)
+            {
+                PartyEnhancementLayerPatch.enhancementVm.UpgradeAllTroops.UpgradeAllTroopsPath(0);
             }
 
             return true;
