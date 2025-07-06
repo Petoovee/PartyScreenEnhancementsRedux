@@ -5,10 +5,8 @@ using System;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.Party;
 using TaleWorlds.CampaignSystem.Roster;
-using TaleWorlds.CampaignSystem.ViewModelCollection;
 using TaleWorlds.CampaignSystem.ViewModelCollection.Party;
 using TaleWorlds.Core;
-using TaleWorlds.Core.ViewModelCollection;
 using TaleWorlds.Core.ViewModelCollection.Information;
 using TaleWorlds.Library;
 using TaleWorlds.Localization;
@@ -90,7 +88,7 @@ namespace PartyScreenEnhancements.ViewModel
                 Utilities.DisplayMessage($"PSE Sorting Unit Exception: {e}");
             }
         }
-
+        
         private static void SortAnyParty(MBBindingList<PartyCharacterVM> toSort, PartyBase party,
             TroopRoster rosterToSort, PartySort sorter)
         {
@@ -100,7 +98,7 @@ namespace PartyScreenEnhancements.ViewModel
 
             // Sort the list, this is done for the visual unit cards to be properly positioned after the sort
             // This is not yet persisted to the actual roster, that is done after this.
-            
+
             toSort.StableSort(sorter);
 
             // Sanity check to ensure the leader is *always* at the top of the party.
@@ -111,20 +109,20 @@ namespace PartyScreenEnhancements.ViewModel
                 toSort.RemoveAt(index);
                 toSort.Insert(0, leaderVm);
             }
-
-            // Here we manually clear the roster while ignoring the party leader.
-            // Don't use `rosterToSort.Clear()` as that seems to cause the party leader to get unset permanently afterward, which stops upgrades from working.
-            rosterToSort.RemoveIf((item) => item.Character != leaderOfParty);
-
-            // Re-add the correctly sorted troops to the roster. We need to do it in this janky way due to the fact that we can't easily sort
-            // the underlying roster array.
+            
+            // Since the only function we have to move characters in the roster is `ShiftTroopToIndex`, which probably moves characters
+            // so that the one that is where we want to be, gets "knocked down", this means we could knock characters out of their intended position.
+            // To solve this, we will iterate through the sorted list from the start, find the character in the original list, and move it to the bottom of the roster.
             foreach (PartyCharacterVM character in toSort)
             {
-                if (character.Character != leaderOfParty)
+                // Find the index of the character in the sorted list.
+                int index = toSort.IndexOf(character);
+                if (index < 0) continue; // Character not found in the sorted list.
+
+                // Move the character to the correct position in the roster.
+                if (index != character.Index)
                 {
-                    rosterToSort.AddToCounts(
-                        character.Troop.Character, character.Troop.Number, false, character.Troop.WoundedNumber,
-                        character.Troop.Xp);
+                    rosterToSort.ShiftTroopToIndex(index, rosterToSort.Count-1);
                 }
             }
         }
@@ -138,7 +136,7 @@ namespace PartyScreenEnhancements.ViewModel
                 if (value != _sortHint)
                 {
                     _sortHint = value;
-                    base.OnPropertyChanged(nameof(SortHint));
+                    base.OnPropertyChanged();
                 }
             }
         }
