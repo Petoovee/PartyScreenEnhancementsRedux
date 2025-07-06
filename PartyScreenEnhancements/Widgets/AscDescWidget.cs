@@ -13,7 +13,7 @@ namespace PartyScreenEnhancements.Widgets
         {
         }
 
-        [Editor()]
+        [Editor]
         public Brush UpArrowBrush
         {
             get => _upBrush;
@@ -27,7 +27,7 @@ namespace PartyScreenEnhancements.Widgets
             }
         }
 
-        [Editor()]
+        [Editor]
         public Brush DownArrowBrush
         {
             get => _downBrush;
@@ -41,7 +41,7 @@ namespace PartyScreenEnhancements.Widgets
             }
         }
 
-        [Editor()]
+        [Editor]
         public bool IsDescending
         {
             get => _isDescending;

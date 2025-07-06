@@ -17,7 +17,7 @@ namespace PartyScreenEnhancements.Widgets
             AddState("Selected");
         }
 
-        [Editor()]
+        [Editor]
         public Widget Main
         {
             get => _main;
