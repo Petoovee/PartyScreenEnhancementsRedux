@@ -1,5 +1,5 @@
-﻿using PartyScreenEnhancements.Saving;
-using System;
+﻿using System;
+using PartyScreenEnhancements.Saving;
 using TaleWorlds.CampaignSystem.Party;
 using TaleWorlds.CampaignSystem.ViewModelCollection.Party;
 using TaleWorlds.Core.ViewModelCollection.Information;
@@ -11,9 +11,9 @@ namespace PartyScreenEnhancements.ViewModel
     public class RecruitPrisonerVM : TaleWorlds.Library.ViewModel
     {
         private MBBindingList<PartyCharacterVM> _mainPartyPrisoners;
+        private PartyEnhancementsVM _parent;
         private PartyScreenLogic _partyLogic;
         private PartyVM _partyVM;
-        private PartyEnhancementsVM _parent;
 
         private HintViewModel _recruitHint;
 
@@ -23,7 +23,23 @@ namespace PartyScreenEnhancements.ViewModel
             _partyVM = partyVm;
             _partyLogic = logic;
             _mainPartyPrisoners = _partyVM.MainPartyPrisoners;
-            _recruitHint = new HintViewModel(new TextObject("Recruit All Prisoners.\nClick with CTRL pressed to ignore party size limits"));
+            _recruitHint =
+                new HintViewModel(
+                    new TextObject("Recruit All Prisoners.\nClick with CTRL pressed to ignore party size limits"));
+        }
+
+        [DataSourceProperty]
+        public HintViewModel RecruitHint
+        {
+            get => _recruitHint;
+            set
+            {
+                if (value != _recruitHint)
+                {
+                    _recruitHint = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         public override void OnFinalize()
@@ -38,20 +54,19 @@ namespace PartyScreenEnhancements.ViewModel
         //TODO: Switch to cleaner RecruitByDefault=false logic.
         public void RecruitAll()
         {
-            bool shouldIgnoreLimit = Utilities.IsControlDown();
-            int amountUpgraded = 0;
+            var shouldIgnoreLimit = Utilities.IsControlDown();
+            var amountUpgraded = 0;
 
             try
             {
-
                 var enumerator = new PartyCharacterVM[_mainPartyPrisoners.Count];
                 _mainPartyPrisoners.CopyTo(enumerator, 0);
 
-                foreach (PartyCharacterVM prisoner in enumerator)
+                foreach (var prisoner in enumerator)
                 {
                     if (prisoner == null) continue;
 
-                    int remainingPartySize = _partyLogic.RightOwnerParty.PartySizeLimit - _partyLogic
+                    var remainingPartySize = _partyLogic.RightOwnerParty.PartySizeLimit - _partyLogic
                         .MemberRosters[(int)PartyScreenLogic.PartyRosterSide.Right]
                         .TotalManCount;
                     if (remainingPartySize > 0 || shouldIgnoreLimit)
@@ -61,12 +76,15 @@ namespace PartyScreenEnhancements.ViewModel
                             _partyVM.CurrentCharacter = prisoner;
 
                             if (PartyScreenConfig.PrisonersToRecruit.TryGetValue(prisoner.Character.StringId,
-                                out int val))
+                                    out var val))
                             {
                                 if (val == -1 && PartyScreenConfig.ExtraSettings.RecruitByDefault)
                                     continue;
                             }
-                            else if (!PartyScreenConfig.ExtraSettings.RecruitByDefault) continue;
+                            else if (!PartyScreenConfig.ExtraSettings.RecruitByDefault)
+                            {
+                                continue;
+                            }
 
                             RecruitPrisoner(prisoner,
                                 shouldIgnoreLimit ? prisoner.NumOfRecruitablePrisoners : remainingPartySize,
@@ -102,7 +120,7 @@ namespace PartyScreenEnhancements.ViewModel
 
             if (number > 0)
             {
-                PartyScreenLogic.PartyCommand partyCommand = new PartyScreenLogic.PartyCommand();
+                var partyCommand = new PartyScreenLogic.PartyCommand();
                 partyCommand.FillForRecruitTroop(character.Side, character.Type,
                     character.Character, number, 0);
 
@@ -112,21 +130,5 @@ namespace PartyScreenEnhancements.ViewModel
                 character.UpdateRecruitable();
             }
         }
-
-        [DataSourceProperty]
-        public HintViewModel RecruitHint
-        {
-            get => _recruitHint;
-            set
-            {
-                if (value != _recruitHint)
-                {
-                    _recruitHint = value;
-                    base.OnPropertyChanged(nameof(RecruitHint));
-                }
-            }
-        }
-
-
     }
 }

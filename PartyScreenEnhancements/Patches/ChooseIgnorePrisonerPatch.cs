@@ -32,6 +32,7 @@ namespace PartyScreenEnhancements.Patches
                     else
                         DisplayRemoved(__instance);
                 }
+
                 PartyScreenConfig.Save();
                 return false;
             }
@@ -52,6 +53,5 @@ namespace PartyScreenEnhancements.Patches
                 $"Disallowed recruiting of {__instance.Character.Name}",
                 Color.ConvertStringToColor("#a83123FF")));
         }
-
     }
 }

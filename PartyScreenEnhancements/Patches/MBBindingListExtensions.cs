@@ -1,20 +1,20 @@
-﻿using HarmonyLib;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using HarmonyLib;
 using TaleWorlds.Library;
 
 namespace PartyScreenEnhancements.Patches
 {
     public static class MBBindingListExtensions
     {
-
         /// <summary>
-        /// Sort the <code>MBBindingList</code> using a stable sort, instead of the standard unstable sort (which screws up hero orderings once in a while).
-        /// Uses 2 pieces of reflection to first, get the internal <code>List</code> of the MBBindingList,
-        /// and afterward get the internal <code>_items</code> array of the List.
-        ///
-        /// This is not optimal and VERY fragile, Enumerable would be preferable, but for some reason it seems to freeze the game
-        /// whenever we try to .. enumerate the enumeration.
+        ///     Sort the <code>MBBindingList</code> using a stable sort, instead of the standard unstable sort (which screws up
+        ///     hero orderings once in a while).
+        ///     Uses 2 pieces of reflection to first, get the internal <code>List</code> of the MBBindingList,
+        ///     and afterward get the internal <code>_items</code> array of the List.
+        ///     This is not optimal and VERY fragile, Enumerable would be preferable, but for some reason it seems to freeze the
+        ///     game
+        ///     whenever we try to .. enumerate the enumeration.
         /// </summary>
         /// <param name="list"></param>
         /// <param name="comparer"></param>

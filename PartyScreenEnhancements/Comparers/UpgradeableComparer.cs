@@ -1,18 +1,15 @@
-﻿using TaleWorlds.CampaignSystem.ViewModelCollection;
-using TaleWorlds.CampaignSystem.ViewModelCollection.Party;
+﻿using TaleWorlds.CampaignSystem.ViewModelCollection.Party;
 
 namespace PartyScreenEnhancements.Comparers
 {
     public class UpgradeableComparer : PartySort
     {
-
-        public UpgradeableComparer(PartySort equalSorter, bool descending = true) : base(equalSorter, @descending, null)
+        public UpgradeableComparer(PartySort equalSorter, bool descending = true) : base(equalSorter, descending, null)
         {
         }
 
         internal UpgradeableComparer()
         {
-
         }
 
         public override string GetHintText()
@@ -34,8 +31,8 @@ namespace PartyScreenEnhancements.Comparers
         protected override int localCompare(ref PartyCharacterVM x, ref PartyCharacterVM y)
         {
             if (Descending
-                ? x.NumOfReadyToUpgradeTroops > y.NumOfReadyToUpgradeTroops
-                : y.NumOfReadyToUpgradeTroops > x.NumOfReadyToUpgradeTroops) return -1;
+                    ? x.NumOfReadyToUpgradeTroops > y.NumOfReadyToUpgradeTroops
+                    : y.NumOfReadyToUpgradeTroops > x.NumOfReadyToUpgradeTroops) return -1;
 
 
             if (y.NumOfReadyToUpgradeTroops == x.NumOfReadyToUpgradeTroops)

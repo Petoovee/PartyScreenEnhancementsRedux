@@ -1,7 +1,7 @@
-﻿using PartyScreenEnhancements.Comparers;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Xml.Serialization;
+using PartyScreenEnhancements.Comparers;
 
 namespace PartyScreenEnhancements.Saving
 {
@@ -11,8 +11,6 @@ namespace PartyScreenEnhancements.Saving
     /// </summary>
     public class ExtraSettings : INotifyPropertyChanged
     {
-        public event PropertyChangedEventHandler PropertyChanged;
-
         private bool _displayCategory;
         private bool _separateSorting = true;
         private bool _shouldShowCompletePartyNumber;
@@ -67,7 +65,10 @@ namespace PartyScreenEnhancements.Saving
 
         [XmlElement("PrisonerSorter")] public PartySort PrisonerSorter { get; set; } = PartyScreenConfig.DefaultSorter;
 
-        [XmlElement("GarrisonSorter")] public PartySort GarrisonAndAlliedPartySorter { get; set; } = PartyScreenConfig.DefaultSorter;
+        [XmlElement("GarrisonSorter")]
+        public PartySort GarrisonAndAlliedPartySorter { get; set; } = PartyScreenConfig.DefaultSorter;
+
+        public event PropertyChangedEventHandler PropertyChanged;
 
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {

@@ -1,17 +1,15 @@
-﻿using TaleWorlds.CampaignSystem.ViewModelCollection;
-using TaleWorlds.CampaignSystem.ViewModelCollection.Party;
+﻿using TaleWorlds.CampaignSystem.ViewModelCollection.Party;
 
 namespace PartyScreenEnhancements.Comparers
 {
     public class TrueTierComparer : PartySort
     {
-        public TrueTierComparer(PartySort equalSorter, bool descending) : base(equalSorter, @descending, null)
+        public TrueTierComparer(PartySort equalSorter, bool descending) : base(equalSorter, descending, null)
         {
         }
 
         internal TrueTierComparer()
         {
-
         }
 
         public override string GetHintText()
@@ -32,15 +30,9 @@ namespace PartyScreenEnhancements.Comparers
 
         protected override int localCompare(ref PartyCharacterVM x, ref PartyCharacterVM y)
         {
-            if (Descending ? x.Character.Tier < y.Character.Tier : x.Character.Tier > y.Character.Tier)
-            {
-                return 1;
-            }
+            if (Descending ? x.Character.Tier < y.Character.Tier : x.Character.Tier > y.Character.Tier) return 1;
 
-            if (x.Character.Tier == y.Character.Tier)
-            {
-                return EqualSorter?.Compare(x, y) ?? 0;
-            }
+            if (x.Character.Tier == y.Character.Tier) return EqualSorter?.Compare(x, y) ?? 0;
 
             return -1;
         }

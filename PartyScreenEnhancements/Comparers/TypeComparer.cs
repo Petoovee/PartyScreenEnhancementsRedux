@@ -1,5 +1,4 @@
-﻿using TaleWorlds.CampaignSystem.ViewModelCollection;
-using TaleWorlds.CampaignSystem.ViewModelCollection.Party;
+﻿using TaleWorlds.CampaignSystem.ViewModelCollection.Party;
 
 namespace PartyScreenEnhancements.Comparers
 {
@@ -32,14 +31,12 @@ namespace PartyScreenEnhancements.Comparers
         protected override int localCompare(ref PartyCharacterVM x, ref PartyCharacterVM y)
         {
             if (Descending
-                ? x.Character.GetFormationClass() < y.Character.GetFormationClass()
-                : x.Character.GetFormationClass() > y.Character.GetFormationClass())
+                    ? x.Character.GetFormationClass() < y.Character.GetFormationClass()
+                    : x.Character.GetFormationClass() > y.Character.GetFormationClass())
                 return 1;
 
             if (y.Character.GetFormationClass() == x.Character.GetFormationClass())
-            {
                 return EqualSorter?.Compare(x, y) ?? 0;
-            }
 
             return -1;
         }

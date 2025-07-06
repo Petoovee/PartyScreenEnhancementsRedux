@@ -10,6 +10,8 @@ namespace PartyScreenEnhancements.ViewModel.Settings.Tabs.Miscellaneous
             Name = "Miscellaneous";
         }
 
+        [DataSourceProperty] public string Name { get; set; }
+
         public void ExecuteResetUpgradePaths()
         {
             InformationManager.DisplayMessage(new InformationMessage("Cleared Upgrade Paths!"));
@@ -23,9 +25,5 @@ namespace PartyScreenEnhancements.ViewModel.Settings.Tabs.Miscellaneous
             PartyScreenConfig.PrisonersToRecruit.Clear();
             PartyScreenConfig.Save();
         }
-
-        [DataSourceProperty]
-        public string Name { get; set; }
-
     }
 }

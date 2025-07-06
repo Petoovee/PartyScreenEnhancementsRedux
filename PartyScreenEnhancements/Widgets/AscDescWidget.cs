@@ -5,81 +5,66 @@ namespace PartyScreenEnhancements.Widgets
 {
     public class AscDescWidget : ButtonWidget
     {
-        private Brush _upBrush;
         private Brush _downBrush;
         private bool _isDescending;
+        private Brush _upBrush;
 
         public AscDescWidget(UIContext context) : base(context)
         {
         }
 
-        private void UpdateVisual()
-        {
-            if (UpArrowBrush == null || DownArrowBrush == null)
-            {
-                return;
-            }
-
-            if (IsDescending)
-            {
-                base.Brush = DownArrowBrush;
-            }
-            else
-            {
-                base.Brush = UpArrowBrush;
-            }
-        }
-
-        [Editor(false)]
+        [Editor()]
         public Brush UpArrowBrush
         {
-            get
-            {
-                return _upBrush;
-            }
+            get => _upBrush;
             set
             {
                 if (_upBrush != value)
                 {
                     _upBrush = value;
-                    base.OnPropertyChanged(value, nameof(UpArrowBrush));
+                    OnPropertyChanged(value);
                 }
             }
         }
 
-        [Editor(false)]
+        [Editor()]
         public Brush DownArrowBrush
         {
-            get
-            {
-                return _downBrush;
-            }
+            get => _downBrush;
             set
             {
                 if (_downBrush != value)
                 {
                     _downBrush = value;
-                    base.OnPropertyChanged(value, nameof(DownArrowBrush));
+                    OnPropertyChanged(value);
                 }
             }
         }
 
-        [Editor(false)]
+        [Editor()]
         public bool IsDescending
         {
-            get
-            {
-                return _isDescending;
-            }
+            get => _isDescending;
             set
             {
                 if (_isDescending != value)
                 {
                     _isDescending = value;
-                    base.OnPropertyChanged(value, nameof(IsDescending));
+                    OnPropertyChanged(value);
                 }
+
                 UpdateVisual();
             }
+        }
+
+        private void UpdateVisual()
+        {
+            if (UpArrowBrush == null || DownArrowBrush == null) return;
+
+            if (IsDescending)
+                Brush = DownArrowBrush;
+            else
+                Brush = UpArrowBrush;
         }
     }
 }

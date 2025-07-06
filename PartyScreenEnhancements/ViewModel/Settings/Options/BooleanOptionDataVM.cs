@@ -9,37 +9,36 @@ namespace PartyScreenEnhancements.ViewModel.Settings.Options
      */
     public class BooleanOptionDataVM : GenericOptionDataVM
     {
-        public BooleanOptionDataVM(bool initialValue, string name, string description, Action<bool> setter) : base(name, description, 0)
+        private readonly Action<bool> _setter;
+
+        private bool _optionValue;
+
+        public BooleanOptionDataVM(bool initialValue, string name, string description, Action<bool> setter) : base(name,
+            description, 0)
         {
             _optionValue = initialValue;
             OptionValueAsBoolean = _optionValue;
             _setter = setter;
-            ImageIDs = new string[]
+            ImageIDs = new[]
             {
-                name.ToString() + "_0",
-                name.ToString() + "_1"
+                name + "_0",
+                name + "_1"
             };
         }
 
         [DataSourceProperty]
         public bool OptionValueAsBoolean
         {
-            get
-            {
-                return _optionValue;
-            }
+            get => _optionValue;
             set
             {
                 if (value != _optionValue)
                 {
                     _optionValue = value;
                     _setter(value);
-                    base.OnPropertyChanged(nameof(OptionValueAsBoolean));
+                    OnPropertyChanged();
                 }
             }
         }
-
-        private bool _optionValue;
-        private Action<bool> _setter;
     }
 }

@@ -1,22 +1,23 @@
-﻿using PartyScreenEnhancements.Comparers;
+﻿using System;
+using System.Collections.Generic;
+using PartyScreenEnhancements.Comparers;
 using PartyScreenEnhancements.Saving;
 using PartyScreenEnhancements.ViewModel.Settings.Sorting;
-using System;
-using System.Collections.Generic;
 using TaleWorlds.Library;
 
 namespace PartyScreenEnhancements.ViewModel.Settings.Tabs.Sorting
 {
     public class SettingSorterPaneVM : TaleWorlds.Library.ViewModel
     {
-        private readonly SettingScreenVM _parent;
         private readonly Action<PartySort> _newSorterCallBack;
+        private readonly SettingScreenVM _parent;
 
-        private PartySort _sorter;
+        private readonly PartySort _sorter;
         private MBBindingList<SettingSortVM> _possibleSettingList;
         private MBBindingList<SettingSortVM> _settingList;
 
-        public SettingSorterPaneVM(SettingScreenVM parent, string name, PartySort sorter, Action<PartySort> newSorterCallback)
+        public SettingSorterPaneVM(SettingScreenVM parent, string name, PartySort sorter,
+            Action<PartySort> newSorterCallback)
         {
             _sorter = sorter;
             _parent = parent;
@@ -27,6 +28,36 @@ namespace PartyScreenEnhancements.ViewModel.Settings.Tabs.Sorting
 
             InitialiseSettingLists();
         }
+
+        [DataSourceProperty]
+        public MBBindingList<SettingSortVM> PossibleSettingList
+        {
+            get => _possibleSettingList;
+            set
+            {
+                if (value != _possibleSettingList)
+                {
+                    _possibleSettingList = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        [DataSourceProperty]
+        public MBBindingList<SettingSortVM> SettingList
+        {
+            get => _settingList;
+            set
+            {
+                if (value != _settingList)
+                {
+                    _settingList = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        [DataSourceProperty] public string Name { get; set; }
 
         public void TransferSorter(SettingSortVM sorter, SettingSide side)
         {
@@ -39,7 +70,9 @@ namespace PartyScreenEnhancements.ViewModel.Settings.Tabs.Sorting
             if (targetTag == "SettingList")
             {
                 if (sorter.Side != SettingSide.RIGHT)
+                {
                     ExecuteTransfer(sorter, index, SettingSide.RIGHT);
+                }
                 else
                 {
                     _settingList.Remove(sorter);
@@ -52,7 +85,9 @@ namespace PartyScreenEnhancements.ViewModel.Settings.Tabs.Sorting
             else if (targetTag == "PossibleSettingList")
             {
                 if (sorter.Side != SettingSide.LEFT)
+                {
                     ExecuteTransfer(sorter, index, SettingSide.LEFT);
+                }
                 else
                 {
                     _possibleSettingList.Remove(sorter);
@@ -76,13 +111,9 @@ namespace PartyScreenEnhancements.ViewModel.Settings.Tabs.Sorting
         public void SaveSettingList()
         {
             if (_settingList.Count > 0)
-            {
                 _newSorterCallBack(GetFullPartySorter(0));
-            }
             else
-            {
                 _newSorterCallBack(new AlphabetComparer(null, false));
-            }
 
             PartyScreenConfig.Save();
         }
@@ -105,12 +136,9 @@ namespace PartyScreenEnhancements.ViewModel.Settings.Tabs.Sorting
 
         private PartySort GetFullPartySorter(int n)
         {
-            if (n == _settingList.Count - 1)
-            {
-                return _settingList[n].SortingComparer;
-            }
+            if (n == _settingList.Count - 1) return _settingList[n].SortingComparer;
 
-            PartySort toReturn = _settingList[n].SortingComparer;
+            var toReturn = _settingList[n].SortingComparer;
             toReturn.EqualSorter = GetFullPartySorter(n + 1);
             return toReturn;
         }
@@ -120,17 +148,13 @@ namespace PartyScreenEnhancements.ViewModel.Settings.Tabs.Sorting
             InitialisePossibleSettingList();
             InitialiseSettingList();
 
-            foreach (SettingSortVM settingSortVm in _settingList)
-            {
+            foreach (var settingSortVm in _settingList)
                 for (var i = 0; i < _possibleSettingList.Count; i++)
-                {
                     if (_possibleSettingList[i].SortingComparer.GetType() == settingSortVm.SortingComparer.GetType())
                     {
                         _possibleSettingList.RemoveAt(i);
                         break;
                     }
-                }
-            }
         }
 
         //TODO: Consider using reflection here instead of manual declaration
@@ -150,66 +174,33 @@ namespace PartyScreenEnhancements.ViewModel.Settings.Tabs.Sorting
                 SettingSide.LEFT, _parent.OpenSubSetting));
             _possibleSettingList.Add(new SettingSortVM(new NumberComparer(null, true), TransferSorter, SettingSide.LEFT,
                 _parent.OpenSubSetting));
-            _possibleSettingList.Add(new SettingSortVM(new UpgradeableComparer(null, true), TransferSorter, SettingSide.LEFT,
+            _possibleSettingList.Add(new SettingSortVM(new UpgradeableComparer(null), TransferSorter, SettingSide.LEFT,
                 _parent.OpenSubSetting));
-            _possibleSettingList.Add(new SettingSortVM(new WoundedComparer(null, true), TransferSorter, SettingSide.LEFT,
+            _possibleSettingList.Add(new SettingSortVM(new WoundedComparer(null, true), TransferSorter,
+                SettingSide.LEFT,
                 _parent.OpenSubSetting));
         }
 
         private void InitialiseSettingList()
         {
-            for (PartySort currentSort = _sorter; currentSort != null; currentSort = currentSort.EqualSorter)
+            for (var currentSort = _sorter; currentSort != null; currentSort = currentSort.EqualSorter)
             {
                 PartySort freshSorter;
                 if (currentSort.HasCustomSettings())
-                {
                     freshSorter =
                         currentSort.GetType()
                             .GetConstructor(new[] { typeof(PartySort), typeof(bool), typeof(List<string>) })
                             ?.Invoke(new object[]
-                                {null, currentSort.Descending, currentSort.CustomSettingsList}) as PartySort;
-                }
+                                { null, currentSort.Descending, currentSort.CustomSettingsList }) as PartySort;
                 else
-                {
                     freshSorter = currentSort.GetType().GetConstructor(new[] { typeof(PartySort), typeof(bool) })
                         ?.Invoke(new object[] { null, currentSort.Descending }) as PartySort;
-                }
 
-                var settingSortVM = new SettingSortVM(freshSorter, TransferSorter, SettingSide.RIGHT, _parent.OpenSubSetting);
+                var settingSortVM =
+                    new SettingSortVM(freshSorter, TransferSorter, SettingSide.RIGHT, _parent.OpenSubSetting);
 
                 _settingList.Add(settingSortVM);
             }
         }
-
-        [DataSourceProperty]
-        public MBBindingList<SettingSortVM> PossibleSettingList
-        {
-            get => _possibleSettingList;
-            set
-            {
-                if (value != _possibleSettingList)
-                {
-                    _possibleSettingList = value;
-                    OnPropertyChanged(nameof(PossibleSettingList));
-                }
-            }
-        }
-
-        [DataSourceProperty]
-        public MBBindingList<SettingSortVM> SettingList
-        {
-            get => _settingList;
-            set
-            {
-                if (value != _settingList)
-                {
-                    _settingList = value;
-                    OnPropertyChanged(nameof(SettingList));
-                }
-            }
-        }
-
-        [DataSourceProperty]
-        public string Name { get; set; }
     }
 }

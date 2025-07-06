@@ -1,11 +1,10 @@
-﻿using TaleWorlds.CampaignSystem.ViewModelCollection;
-using TaleWorlds.CampaignSystem.ViewModelCollection.Party;
+﻿using TaleWorlds.CampaignSystem.ViewModelCollection.Party;
 
 namespace PartyScreenEnhancements.Comparers
 {
     public class LevelComparer : PartySort
     {
-        public LevelComparer(PartySort equalSorter, bool descending) : base(equalSorter, @descending, null)
+        public LevelComparer(PartySort equalSorter, bool descending) : base(equalSorter, descending, null)
         {
         }
 
@@ -15,7 +14,8 @@ namespace PartyScreenEnhancements.Comparers
 
         public override string GetHintText()
         {
-            return "Compares units based on their Level.\nAscending order is low to high.\nDescending order is high to low.";
+            return
+                "Compares units based on their Level.\nAscending order is low to high.\nDescending order is high to low.";
         }
 
         public override string GetName()

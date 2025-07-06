@@ -1,5 +1,4 @@
-﻿using TaleWorlds.Core.ViewModelCollection;
-using TaleWorlds.Core.ViewModelCollection.Information;
+﻿using TaleWorlds.Core.ViewModelCollection.Information;
 using TaleWorlds.Library;
 using TaleWorlds.Localization;
 
@@ -15,8 +14,7 @@ namespace PartyScreenEnhancements.ViewModel.Settings
             Name = displayText;
         }
 
-        [DataSourceProperty]
-        public string Name { get; }
+        [DataSourceProperty] public string Name { get; }
 
         [DataSourceProperty]
         public HintViewModel SettingHint
@@ -27,7 +25,7 @@ namespace PartyScreenEnhancements.ViewModel.Settings
                 if (value != _settingHint)
                 {
                     _settingHint = value;
-                    base.OnPropertyChanged(nameof(SettingHint));
+                    OnPropertyChanged();
                 }
             }
         }

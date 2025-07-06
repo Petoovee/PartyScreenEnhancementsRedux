@@ -6,81 +6,27 @@ namespace PartyScreenEnhancements.Widgets
 {
     public class SettingSortWidget : ButtonWidget
     {
+        private bool _hasCustomSettings;
+
+        private Widget _main;
+        private RichTextWidget _nameWidget;
+
         public SettingSortWidget(UIContext context) : base(context)
         {
-            base.OverrideDefaultStateSwitchingEnabled = true;
-            base.AddState("Selected");
+            OverrideDefaultStateSwitchingEnabled = true;
+            AddState("Selected");
         }
 
-        private void SetWidgetsState(string state)
-        {
-            base.SetState(state);
-            _main.SetState(state);
-        }
-
-        protected override void OnLateUpdate(float dt)
-        {
-            base.OnLateUpdate(dt);
-            if (HasCustomSettings)
-            {
-                NameWidget.Brush.FontColor = Color.ConvertStringToColor("#FFD700FF");
-            }
-        }
-
-        protected override void RefreshState()
-        {
-            base.RefreshState();
-
-            if (base.IsDisabled)
-            {
-                SetWidgetsState("Disabled");
-                return;
-            }
-            if (base.IsPressed)
-            {
-                SetWidgetsState("Pressed");
-                return;
-            }
-            if (base.IsHovered)
-            {
-                SetWidgetsState("Hovered");
-                return;
-            }
-            if (base.IsSelected)
-            {
-                SetWidgetsState("Selected");
-                return;
-            }
-            SetWidgetsState("Default");
-
-        }
-
-        public void ResetIsSelected()
-        {
-            base.IsSelected = false;
-        }
-
-        private void OnValueChanged(PropertyOwnerObject arg1, string arg2, object arg3)
-        {
-            if (arg2 == "ValueInt")
-            {
-                base.AcceptDrag = ((int)arg3 > 0);
-            }
-        }
-
-        [Editor(false)]
+        [Editor()]
         public Widget Main
         {
-            get
-            {
-                return _main;
-            }
+            get => _main;
             set
             {
                 if (_main != value)
                 {
                     _main = value;
-                    base.OnPropertyChanged(value, nameof(Main));
+                    OnPropertyChanged(value);
                 }
             }
         }
@@ -93,7 +39,7 @@ namespace PartyScreenEnhancements.Widgets
                 if (_nameWidget != value)
                 {
                     _nameWidget = value;
-                    base.OnPropertyChanged(value, nameof(NameWidget));
+                    OnPropertyChanged(value);
                 }
             }
         }
@@ -106,13 +52,62 @@ namespace PartyScreenEnhancements.Widgets
                 if (_hasCustomSettings != value)
                 {
                     _hasCustomSettings = value;
-                    base.OnPropertyChanged(value, nameof(HasCustomSettings));
+                    OnPropertyChanged(value);
                 }
             }
         }
 
-        private Widget _main;
-        private RichTextWidget _nameWidget;
-        private bool _hasCustomSettings;
+        private void SetWidgetsState(string state)
+        {
+            base.SetState(state);
+            _main.SetState(state);
+        }
+
+        protected override void OnLateUpdate(float dt)
+        {
+            base.OnLateUpdate(dt);
+            if (HasCustomSettings) NameWidget.Brush.FontColor = Color.ConvertStringToColor("#FFD700FF");
+        }
+
+        protected override void RefreshState()
+        {
+            base.RefreshState();
+
+            if (IsDisabled)
+            {
+                SetWidgetsState("Disabled");
+                return;
+            }
+
+            if (IsPressed)
+            {
+                SetWidgetsState("Pressed");
+                return;
+            }
+
+            if (IsHovered)
+            {
+                SetWidgetsState("Hovered");
+                return;
+            }
+
+            if (IsSelected)
+            {
+                SetWidgetsState("Selected");
+                return;
+            }
+
+            SetWidgetsState("Default");
+        }
+
+        public void ResetIsSelected()
+        {
+            IsSelected = false;
+        }
+
+        private void OnValueChanged(PropertyOwnerObject arg1, string arg2, object arg3)
+        {
+            if (arg2 == "ValueInt") AcceptDrag = (int)arg3 > 0;
+        }
     }
 }

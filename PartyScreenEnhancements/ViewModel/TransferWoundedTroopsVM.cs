@@ -8,10 +8,14 @@ namespace PartyScreenEnhancements.ViewModel
 {
     public class TransferWoundedTroopsVM : TaleWorlds.Library.ViewModel
     {
-
-        private PartyVM _partyVm;
         private MBBindingList<PartyCharacterVM> _mainPartyList;
         private PartyEnhancementsVM _parent;
+
+        private PartyVM _partyVm;
+        private bool _shouldShowTransferWounded;
+
+
+        private HintViewModel _woundedHint;
 
         public TransferWoundedTroopsVM(PartyEnhancementsVM parent, PartyVM partyVm, bool shouldShow)
         {
@@ -20,6 +24,34 @@ namespace PartyScreenEnhancements.ViewModel
             _mainPartyList = partyVm?.MainPartyTroops;
             _shouldShowTransferWounded = shouldShow;
             _woundedHint = new HintViewModel(new TextObject("Transfer All Wounded"));
+        }
+
+        [DataSourceProperty]
+        public HintViewModel WoundedHint
+        {
+            get => _woundedHint;
+            set
+            {
+                if (value != _woundedHint)
+                {
+                    _woundedHint = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        [DataSourceProperty]
+        public bool ShouldShowTransferWounded
+        {
+            get => _shouldShowTransferWounded;
+            set
+            {
+                if (value != _shouldShowTransferWounded)
+                {
+                    _shouldShowTransferWounded = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         public override void OnFinalize()
@@ -37,18 +69,14 @@ namespace PartyScreenEnhancements.ViewModel
                 var enumerator = new PartyCharacterVM[_mainPartyList.Count];
                 _mainPartyList?.CopyTo(enumerator, 0);
 
-                foreach (PartyCharacterVM character in enumerator)
-                {
+                foreach (var character in enumerator)
                     if (character?.WoundedCount > 0)
-                    {
                         if (character.IsTroopTransferrable)
                         {
-                            int wounded = Math.Min(character.WoundedCount, character.Number);
+                            var wounded = Math.Min(character.WoundedCount, character.Number);
                             PartyCharacterVM.OnTransfer(character, -1, wounded, character.Side);
                             character.InitializeUpgrades();
                         }
-                    }
-                }
 
                 _partyVm?.ExecuteRemoveZeroCounts();
                 _parent.RefreshValues();
@@ -59,37 +87,5 @@ namespace PartyScreenEnhancements.ViewModel
                 Utilities.DisplayMessage($"PSE Transfer Wounded Exception: {e}");
             }
         }
-
-        [DataSourceProperty]
-        public HintViewModel WoundedHint
-        {
-            get => _woundedHint;
-            set
-            {
-                if (value != _woundedHint)
-                {
-                    _woundedHint = value;
-                    base.OnPropertyChanged(nameof(WoundedHint));
-                }
-            }
-        }
-
-        [DataSourceProperty]
-        public bool ShouldShowTransferWounded
-        {
-            get => _shouldShowTransferWounded;
-            set
-            {
-                if (value != _shouldShowTransferWounded)
-                {
-                    _shouldShowTransferWounded = value;
-                    base.OnPropertyChanged(nameof(ShouldShowTransferWounded));
-                }
-            }
-        }
-
-
-        private HintViewModel _woundedHint;
-        private bool _shouldShowTransferWounded;
     }
 }

@@ -1,8 +1,7 @@
-﻿using PartyScreenEnhancements.Comparers;
+﻿using System;
+using PartyScreenEnhancements.Comparers;
 using PartyScreenEnhancements.Patches;
 using PartyScreenEnhancements.Saving;
-using System;
-using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.Party;
 using TaleWorlds.CampaignSystem.Roster;
 using TaleWorlds.CampaignSystem.ViewModelCollection.Party;
@@ -15,13 +14,12 @@ namespace PartyScreenEnhancements.ViewModel
 {
     public class SortAllTroopsVM : TaleWorlds.Library.ViewModel
     {
+        private const int _leftSide = (int)PartyScreenLogic.PartyRosterSide.Left;
+        private const int _rightSide = (int)PartyScreenLogic.PartyRosterSide.Right;
         private MBBindingList<PartyCharacterVM> _mainPartyList;
         private MBBindingList<PartyCharacterVM> _mainPartyPrisoners;
         private PartyScreenLogic _partyLogic;
         private PartyVM _partyVM;
-
-        private const int _leftSide = (int)PartyScreenLogic.PartyRosterSide.Left;
-        private const int _rightSide = (int)PartyScreenLogic.PartyRosterSide.Right;
 
         private HintViewModel _sortHint;
 
@@ -32,6 +30,20 @@ namespace PartyScreenEnhancements.ViewModel
             _mainPartyList = _partyVM.MainPartyTroops;
             _mainPartyPrisoners = _partyVM.MainPartyPrisoners;
             _sortHint = new HintViewModel(new TextObject("Sort Troops\nCtrl Click to sort just main party"));
+        }
+
+        [DataSourceProperty]
+        public HintViewModel SortHint
+        {
+            get => _sortHint;
+            set
+            {
+                if (value != _sortHint)
+                {
+                    _sortHint = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         public override void OnFinalize()
@@ -66,8 +78,8 @@ namespace PartyScreenEnhancements.ViewModel
 
                     if (_partyLogic.LeftOwnerParty?.MobileParty != null)
                     {
-                        bool useGarrisonSorter = settings.SeparateSortingProfiles;
-                        PartySort sorterToUse = useGarrisonSorter
+                        var useGarrisonSorter = settings.SeparateSortingProfiles;
+                        var sorterToUse = useGarrisonSorter
                             ? settings.GarrisonAndAlliedPartySorter
                             : settings.PartySorter;
 
@@ -77,10 +89,8 @@ namespace PartyScreenEnhancements.ViewModel
                 }
 
                 if (!_mainPartyList.IsEmpty() && (!_mainPartyList[0]?.Troop.Character?.IsPlayerCharacter ?? false))
-                {
                     InformationManager.DisplayMessage(new InformationMessage(
                         "Your player character is no longer at the top of the list due to sorting, do NOT save your game and notify the mod manager"));
-                }
             }
             catch (Exception e)
             {
@@ -88,13 +98,13 @@ namespace PartyScreenEnhancements.ViewModel
                 Utilities.DisplayMessage($"PSE Sorting Unit Exception: {e}");
             }
         }
-        
+
         private static void SortAnyParty(MBBindingList<PartyCharacterVM> toSort, PartyBase party,
             TroopRoster rosterToSort, PartySort sorter)
         {
             if (rosterToSort == null || rosterToSort.Count == 0 || toSort == null || toSort.IsEmpty()) return;
 
-            CharacterObject leaderOfParty = party?.LeaderHero?.CharacterObject;
+            var leaderOfParty = party?.LeaderHero?.CharacterObject;
 
             // Sort the list, this is done for the visual unit cards to be properly positioned after the sort
             // This is not yet persisted to the actual roster, that is done after this.
@@ -104,40 +114,23 @@ namespace PartyScreenEnhancements.ViewModel
             // Sanity check to ensure the leader is *always* at the top of the party.
             if (leaderOfParty != null)
             {
-                var index = toSort.FindIndex((character) => character.Character.Equals(leaderOfParty));
-                PartyCharacterVM leaderVm = toSort[index];
+                var index = toSort.FindIndex(character => character.Character.Equals(leaderOfParty));
+                var leaderVm = toSort[index];
                 toSort.RemoveAt(index);
                 toSort.Insert(0, leaderVm);
             }
-            
+
             // Since the only function we have to move characters in the roster is `ShiftTroopToIndex`, which probably moves characters
             // so that the one that is where we want to be, gets "knocked down", this means we could knock characters out of their intended position.
             // To solve this, we will iterate through the sorted list from the start, find the character in the original list, and move it to the bottom of the roster.
-            foreach (PartyCharacterVM character in toSort)
+            foreach (var character in toSort)
             {
                 // Find the index of the character in the sorted list.
-                int index = toSort.IndexOf(character);
+                var index = toSort.IndexOf(character);
                 if (index < 0) continue; // Character not found in the sorted list.
 
                 // Move the character to the correct position in the roster.
-                if (index != character.Index)
-                {
-                    rosterToSort.ShiftTroopToIndex(index, rosterToSort.Count-1);
-                }
-            }
-        }
-
-        [DataSourceProperty]
-        public HintViewModel SortHint
-        {
-            get => _sortHint;
-            set
-            {
-                if (value != _sortHint)
-                {
-                    _sortHint = value;
-                    base.OnPropertyChanged();
-                }
+                if (index != character.Index) rosterToSort.ShiftTroopToIndex(index, rosterToSort.Count - 1);
             }
         }
     }

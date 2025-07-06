@@ -1,7 +1,7 @@
-﻿using PartyScreenEnhancements.Saving;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using PartyScreenEnhancements.Saving;
 using TaleWorlds.CampaignSystem.Party;
 using TaleWorlds.CampaignSystem.ViewModelCollection.Party;
 using TaleWorlds.Core.ViewModelCollection.Information;
@@ -30,6 +30,20 @@ namespace PartyScreenEnhancements.ViewModel
                 new HintViewModel(new TextObject("Upgrade All Troops\nRight click to upgrade only paths set by you"));
         }
 
+        [DataSourceProperty]
+        public HintViewModel UpgradeHint
+        {
+            get => _upgradeHint;
+            set
+            {
+                if (value != _upgradeHint)
+                {
+                    _upgradeHint = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
         public override void OnFinalize()
         {
             base.OnFinalize();
@@ -47,7 +61,7 @@ namespace PartyScreenEnhancements.ViewModel
 
             try
             {
-                foreach (PartyCharacterVM character in _mainPartyList)
+                foreach (var character in _mainPartyList)
                 {
                     if (character == null || character.Upgrades.Count == 0) continue;
 
@@ -70,10 +84,7 @@ namespace PartyScreenEnhancements.ViewModel
                     }
                 }
 
-                foreach (var keyValuePair in toUpgrade)
-                {
-                    totalUpgrades += Upgrade(keyValuePair.Key, keyValuePair.Value);
-                }
+                foreach (var keyValuePair in toUpgrade) totalUpgrades += Upgrade(keyValuePair.Key, keyValuePair.Value);
 
                 _parent.RefreshValues();
                 _partyVM.ExecuteRemoveZeroCounts();
@@ -87,9 +98,7 @@ namespace PartyScreenEnhancements.ViewModel
                 Logging.Log(Logging.Levels.ERROR, $"Upgrade All Troops: {e}");
 
                 foreach (var upgradeTarget in toUpgrade)
-                {
                     Logging.Log(Logging.Levels.DEBUG, $"Key: {upgradeTarget.Key.Name} - Value: {upgradeTarget.Value}");
-                }
             }
         }
 
@@ -120,10 +129,7 @@ namespace PartyScreenEnhancements.ViewModel
                 allInsufficient = character.Upgrades.All(uTarget => uTarget.IsInsufficient);
             }
 
-            if (!allInsufficient)
-            {
-                return ExecuteUpgrade(upgradeTarget, character);
-            }
+            if (!allInsufficient) return ExecuteUpgrade(upgradeTarget, character);
 
             return 0;
         }
@@ -147,11 +153,10 @@ namespace PartyScreenEnhancements.ViewModel
                     var remainingUpgrades = upgradeableTroops - upgradeCounts.Sum();
 
                     if (remainingUpgrades > 0)
-                    {
                         // Distribute the remaining upgrades as best as possible (in case of uneven number of upgrades available)
-                        for (int i = 0; i < upgradeCounts.Count; i++)
+                        for (var i = 0; i < upgradeCounts.Count; i++)
                         {
-                            UpgradeTargetVM reprCharacter = character.Upgrades[i];
+                            var reprCharacter = character.Upgrades[i];
                             var toAdd = reprCharacter.AvailableUpgrades - upgradeCounts[i];
 
                             if (toAdd >= remainingUpgrades)
@@ -165,26 +170,19 @@ namespace PartyScreenEnhancements.ViewModel
                                 remainingUpgrades -= toAdd;
                             }
                         }
-                    }
 
-                    for (int i = 0; i < upgradeCounts.Count; i++)
-                    {
+                    for (var i = 0; i < upgradeCounts.Count; i++)
                         if (upgradeCounts[i] > 0)
-                        {
                             SendCommand(character, upgradeCounts[i], i);
-                        }
-                    }
 
                     return upgradeCounts.Sum();
                 }
-                else if (upgradeTarget is SpecificUpgradeTarget target)
+
+                if (upgradeTarget is SpecificUpgradeTarget target)
                 {
                     var availableUpgrades = character.Upgrades[target.targetIndex].AvailableUpgrades;
 
-                    if (availableUpgrades > 0)
-                    {
-                        SendCommand(character, availableUpgrades, target.targetIndex);
-                    }
+                    if (availableUpgrades > 0) SendCommand(character, availableUpgrades, target.targetIndex);
 
                     return availableUpgrades;
                 }
@@ -201,20 +199,6 @@ namespace PartyScreenEnhancements.ViewModel
             _partyLogic.AddCommand(partyCommand);
         }
 
-        [DataSourceProperty]
-        public HintViewModel UpgradeHint
-        {
-            get => _upgradeHint;
-            set
-            {
-                if (value != _upgradeHint)
-                {
-                    _upgradeHint = value;
-                    OnPropertyChanged(nameof(UpgradeHint));
-                }
-            }
-        }
-
         // Best approximation of Rust enums ._.
         private abstract class UpgradeTarget
         {
@@ -226,12 +210,12 @@ namespace PartyScreenEnhancements.ViewModel
 
         private class SpecificUpgradeTarget : UpgradeTarget
         {
-            public int targetIndex { get; }
-
             public SpecificUpgradeTarget(int targetIndex)
             {
                 this.targetIndex = targetIndex;
             }
+
+            public int targetIndex { get; }
 
 
             public override string ToString()

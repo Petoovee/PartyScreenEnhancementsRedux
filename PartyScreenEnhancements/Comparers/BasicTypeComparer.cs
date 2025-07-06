@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using TaleWorlds.CampaignSystem;
-using TaleWorlds.CampaignSystem.ViewModelCollection;
 using TaleWorlds.CampaignSystem.ViewModelCollection.Party;
 
 namespace PartyScreenEnhancements.Comparers
@@ -9,7 +8,9 @@ namespace PartyScreenEnhancements.Comparers
     public class BasicTypeComparer : PartySort
     {
         private Dictionary<string, Func<CharacterObject, CharacterObject, int>> _compDictionary;
-        public BasicTypeComparer(PartySort equalSorter, bool descending, List<string> customSort = null) : base(equalSorter, @descending, customSort)
+
+        public BasicTypeComparer(PartySort equalSorter, bool descending, List<string> customSort = null) : base(
+            equalSorter, descending, customSort)
         {
         }
 
@@ -19,7 +20,8 @@ namespace PartyScreenEnhancements.Comparers
 
         public override string GetHintText()
         {
-            return "Compares units based on their unit type (Infantry, Archers, Mounted).\nAscending order Horse Archers -> Cavalry -> Archers -> Infantry.\nDescending order is Infantry -> Archers -> Cavalry -> Horse Archers";
+            return
+                "Compares units based on their unit type (Infantry, Archers, Mounted).\nAscending order Horse Archers -> Cavalry -> Archers -> Infantry.\nDescending order is Infantry -> Archers -> Cavalry -> Horse Archers";
         }
 
         public override string GetName()
@@ -42,8 +44,8 @@ namespace PartyScreenEnhancements.Comparers
             if (xChar == null || yChar == null)
                 return 1;
 
-            bool isXHorseArcher = xChar.IsRanged && xChar.IsMounted;
-            bool isYHorseArcher = yChar.IsRanged && yChar.IsMounted;
+            var isXHorseArcher = xChar.IsRanged && xChar.IsMounted;
+            var isYHorseArcher = yChar.IsRanged && yChar.IsMounted;
 
             if (isXHorseArcher || isYHorseArcher)
             {
@@ -52,19 +54,17 @@ namespace PartyScreenEnhancements.Comparers
             }
             else
             {
-                if ((x.Character.IsInfantry && y.Character.IsInfantry) || (x.Character.IsMounted && y.Character.IsMounted) || (x.Character.IsRanged && y.Character.IsRanged))
+                if ((x.Character.IsInfantry && y.Character.IsInfantry) ||
+                    (x.Character.IsMounted && y.Character.IsMounted) || (x.Character.IsRanged && y.Character.IsRanged))
                     return EqualSorter?.Compare(x, y) ?? 0;
             }
 
             foreach (var order in CustomSettingsList)
             {
                 var function = _compDictionary[order];
-                int value = function(xChar, yChar);
+                var value = function(xChar, yChar);
 
-                if (value != int.MaxValue)
-                {
-                    return value;
-                }
+                if (value != int.MaxValue) return value;
             }
 
             return 1;

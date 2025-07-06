@@ -10,20 +10,20 @@ namespace PartyScreenEnhancements.Saving
     {
         public static void Initialize()
         {
-            Directory.CreateDirectory(Directories.GetConfigPath());
+            Directory.CreateDirectory(GetConfigPath());
         }
 
         public static string GetConfigPathForFile(string filename)
         {
-            return Path.Combine(Directories.GetConfigPath(), filename);
+            return Path.Combine(GetConfigPath(), filename);
         }
 
         public static string GetConfigPath()
         {
             // Credits to Discord user @Sidies from the Modding Discord.
-            PropertyInfo propertyInfo = Common.PlatformFileHelper.GetType().GetProperty("DocumentsPath", System.Reflection.BindingFlags.NonPublic
-                                                                                                         | System.Reflection.BindingFlags.Instance);
-            string documentsFilePath = (string)propertyInfo.GetValue(Common.PlatformFileHelper);
+            var propertyInfo = Common.PlatformFileHelper.GetType().GetProperty("DocumentsPath", BindingFlags.NonPublic
+                | BindingFlags.Instance);
+            var documentsFilePath = (string)propertyInfo.GetValue(Common.PlatformFileHelper);
 
             documentsFilePath = Path.Combine(
                 documentsFilePath,

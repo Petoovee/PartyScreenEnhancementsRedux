@@ -1,7 +1,6 @@
 ﻿using HarmonyLib;
 using PartyScreenEnhancements.Saving;
 using SandBox.GauntletUI;
-using TaleWorlds.CampaignSystem.ViewModelCollection;
 using TaleWorlds.CampaignSystem.ViewModelCollection.Party;
 using TaleWorlds.ScreenSystem;
 
@@ -15,9 +14,7 @@ namespace PartyScreenEnhancements.Patches
         public static void Prefix(ref string hint)
         {
             if (ScreenManager.TopScreen is GauntletPartyScreen && PartyScreenConfig.ExtraSettings.PathSelectTooltips)
-            {
                 hint += UPGRADE_TOOLTIP;
-            }
         }
     }
 }

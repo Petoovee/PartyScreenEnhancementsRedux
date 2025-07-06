@@ -40,9 +40,7 @@ namespace PartyScreenEnhancements.Patches
         public static bool PrefixDone(ref PartyVM __instance)
         {
             if (PartyScreenConfig.ExtraSettings.UpgradeOnDone)
-            {
                 PartyEnhancementLayerPatch.enhancementVm.UpgradeAllTroops.UpgradeAllTroopsPath(0);
-            }
 
             return true;
         }

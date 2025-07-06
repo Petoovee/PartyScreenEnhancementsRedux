@@ -22,6 +22,22 @@ namespace PartyScreenEnhancements.ViewModel.Settings.SortingOrders
             InitializeList();
         }
 
+        [DataSourceProperty]
+        public MBBindingList<SettingSortingOrderVM> SortingOrder
+        {
+            get => _sortingOrder;
+            set
+            {
+                if (value != _sortingOrder)
+                {
+                    _sortingOrder = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        [DataSourceProperty] public string Name { get; set; }
+
         public void ExecuteCloseSettings()
         {
             _settingScreen.CloseSubSetting();
@@ -37,7 +53,6 @@ namespace PartyScreenEnhancements.ViewModel.Settings.SortingOrders
             _sortingOrder = null;
             _settingScreen = null;
             _sorter = null;
-
         }
 
         public void ExecuteListTransfer(SettingSortingOrderVM sorter, int index, string targetTag)
@@ -51,14 +66,8 @@ namespace PartyScreenEnhancements.ViewModel.Settings.SortingOrders
 
         private void InitializeList()
         {
-            if (_sorter.CustomSettingsList == null || _sorter.CustomSettingsList.IsEmpty())
-            {
-                _sorter.FillCustomList();
-            }
-            _sorter.CustomSettingsList?.ForEach(item =>
-            {
-                SortingOrder.Add(new SettingSortingOrderVM(item));
-            });
+            if (_sorter.CustomSettingsList == null || _sorter.CustomSettingsList.IsEmpty()) _sorter.FillCustomList();
+            _sorter.CustomSettingsList?.ForEach(item => { SortingOrder.Add(new SettingSortingOrderVM(item)); });
         }
 
         private void SaveList()
@@ -66,22 +75,5 @@ namespace PartyScreenEnhancements.ViewModel.Settings.SortingOrders
             _sorter.CustomSettingsList.Clear();
             _sortingOrder.ApplyActionOnAllItems(item => _sorter.CustomSettingsList.Add(item.Name));
         }
-
-        [DataSourceProperty]
-        public MBBindingList<SettingSortingOrderVM> SortingOrder
-        {
-            get => _sortingOrder;
-            set
-            {
-                if (value != _sortingOrder)
-                {
-                    _sortingOrder = value;
-                    base.OnPropertyChanged(nameof(SortingOrder));
-                }
-            }
-        }
-
-        [DataSourceProperty]
-        public string Name { get; set; }
     }
 }

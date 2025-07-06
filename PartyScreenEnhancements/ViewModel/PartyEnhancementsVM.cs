@@ -1,11 +1,11 @@
-﻿using HarmonyLib;
+﻿using System;
+using System.ComponentModel;
+using System.Linq;
+using HarmonyLib;
 using JetBrains.Annotations;
 using PartyScreenEnhancements.Saving;
 using PartyScreenEnhancements.ViewModel.Settings;
 using SandBox.GauntletUI;
-using System;
-using System.ComponentModel;
-using System.Linq;
 using TaleWorlds.CampaignSystem.Party;
 using TaleWorlds.CampaignSystem.ViewModelCollection.Party;
 using TaleWorlds.CampaignSystem.ViewModelCollection.Party.PartyTroopManagerPopUp;
@@ -21,28 +21,27 @@ using TaleWorlds.ScreenSystem;
 namespace PartyScreenEnhancements.ViewModel
 {
     /// <summary>
-    /// Primary VM for the overlay (includes buttons, unit tallies, etc)
-    /// Holds references to all other VMs relevant
+    ///     Primary VM for the overlay (includes buttons, unit tallies, etc)
+    ///     Holds references to all other VMs relevant
     /// </summary>
     public class PartyEnhancementsVM : TaleWorlds.Library.ViewModel
     {
-        private readonly PartyVM _partyVM;
-        private readonly PartyScreenLogic _partyScreenLogic;
-
-        private SortAllTroopsVM _sortTroopsVM;
-        private UpgradeAllTroopsVM _upgradeTroopsVM;
-        private RecruitPrisonerVM _recruitPrisonerVm;
-        private SettingScreenVM _settingScreenVm;
-        private UnitTallyVM _unitTallyVm;
-        private TransferWoundedTroopsVM _transferWounded;
-
         private readonly GauntletPartyScreen _parentScreen;
-        private GauntletLayer _settingLayer;
+        private readonly PartyScreenLogic _partyScreenLogic;
+        private readonly PartyVM _partyVM;
         private GauntletLayer _popupLayer;
-        private IGauntletMovie _settingMovie;
         private IGauntletMovie _popupMovie;
+        private RecruitPrisonerVM _recruitPrisonerVm;
+        private GauntletLayer _settingLayer;
+        private IGauntletMovie _settingMovie;
+        private SettingScreenVM _settingScreenVm;
 
         private HintViewModel _settingsHint;
+
+        private SortAllTroopsVM _sortTroopsVM;
+        private TransferWoundedTroopsVM _transferWounded;
+        private UnitTallyVM _unitTallyVm;
+        private UpgradeAllTroopsVM _upgradeTroopsVM;
 
 
         public PartyEnhancementsVM(PartyVM partyVM, PartyScreenLogic partyScreenLogic, GauntletPartyScreen parentScreen)
@@ -55,8 +54,10 @@ namespace PartyScreenEnhancements.ViewModel
             _sortTroopsVM = new SortAllTroopsVM(_partyVM, _partyScreenLogic);
             _upgradeTroopsVM = new UpgradeAllTroopsVM(this, _partyVM, _partyScreenLogic);
             _recruitPrisonerVm = new RecruitPrisonerVM(this, _partyVM, _partyScreenLogic);
-            _unitTallyVm = new UnitTallyVM(partyVM.MainPartyTroops, partyVM.OtherPartyTroops, partyScreenLogic, _partyScreenLogic?.LeftOwnerParty?.MobileParty?.IsGarrison ?? false);
-            _transferWounded = new TransferWoundedTroopsVM(this, partyVM, _partyScreenLogic?.LeftOwnerParty?.MobileParty?.IsGarrison ?? false);
+            _unitTallyVm = new UnitTallyVM(partyVM.MainPartyTroops, partyVM.OtherPartyTroops, partyScreenLogic,
+                _partyScreenLogic?.LeftOwnerParty?.MobileParty?.IsGarrison ?? false);
+            _transferWounded = new TransferWoundedTroopsVM(this, partyVM,
+                _partyScreenLogic?.LeftOwnerParty?.MobileParty?.IsGarrison ?? false);
 
             _partyScreenLogic.AfterReset += AfterReset;
             _partyScreenLogic.Update += UpdateLabel;
@@ -64,6 +65,93 @@ namespace PartyScreenEnhancements.ViewModel
 
             RefreshValues();
             UpdateLabel(null);
+        }
+
+        [DataSourceProperty] public bool AnyOtherPopupOpen => _partyVM.IsAnyPopUpOpen;
+
+        [DataSourceProperty]
+        public HintViewModel SettingHint
+        {
+            get => _settingsHint;
+            set
+            {
+                if (value != _settingsHint)
+                {
+                    _settingsHint = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        [DataSourceProperty]
+        public UpgradeAllTroopsVM UpgradeAllTroops
+        {
+            get => _upgradeTroopsVM;
+            set
+            {
+                if (value != _upgradeTroopsVM)
+                {
+                    _upgradeTroopsVM = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        [DataSourceProperty]
+        public RecruitPrisonerVM RecruitAllPrisoners
+        {
+            get => _recruitPrisonerVm;
+            set
+            {
+                if (value != _recruitPrisonerVm)
+                {
+                    _recruitPrisonerVm = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        [DataSourceProperty]
+        public SortAllTroopsVM SortAllTroops
+        {
+            get => _sortTroopsVM;
+            set
+            {
+                if (value != _sortTroopsVM)
+                {
+                    _sortTroopsVM = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+
+        [DataSourceProperty]
+        public UnitTallyVM UnitTally
+        {
+            get => _unitTallyVm;
+            set
+            {
+                if (value != _unitTallyVm)
+                {
+                    _unitTallyVm = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        [DataSourceProperty]
+        public TransferWoundedTroopsVM TransferWoundedTroops
+        {
+            get => _transferWounded;
+            set
+            {
+                if (value != _transferWounded)
+                {
+                    _transferWounded = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         public void UpdateLabel([CanBeNull] PartyScreenLogic.PartyCommand command)
@@ -76,18 +164,14 @@ namespace PartyScreenEnhancements.ViewModel
                 var _mainParty = _partyVM.MainPartyTroops;
 
                 if (_mainParty != null && !_mainParty.IsEmpty() &&
-                    (_partyScreenLogic.RightOwnerParty?.PartySizeLimit > 0))
-                {
+                    _partyScreenLogic.RightOwnerParty?.PartySizeLimit > 0)
                     _partyVM.MainPartyTroopsLbl =
                         PopulatePartyList(_mainParty, _partyScreenLogic.RightOwnerParty.PartySizeLimit);
-                }
 
                 if (_otherParty != null && !_otherParty.IsEmpty() &&
-                    (_partyScreenLogic.LeftOwnerParty?.PartySizeLimit > 0))
-                {
+                    _partyScreenLogic.LeftOwnerParty?.PartySizeLimit > 0)
                     _partyVM.OtherPartyTroopsLbl =
                         PopulatePartyList(_otherParty, _partyScreenLogic.LeftOwnerParty.PartySizeLimit);
-                }
             }
             catch (Exception e)
             {
@@ -98,7 +182,7 @@ namespace PartyScreenEnhancements.ViewModel
 
         private string PopulatePartyList(MBBindingList<PartyCharacterVM> list, int sizeLimit)
         {
-            int troopNumb = list.Sum(character => Math.Max(0, character.Troop.Number));
+            var troopNumb = list.Sum(character => Math.Max(0, character.Troop.Number));
             return $"({troopNumb} / {sizeLimit})";
         }
 
@@ -140,22 +224,14 @@ namespace PartyScreenEnhancements.ViewModel
 
         public void OpenPopupViewEnhancements(PartyTroopManagerVM openedPopup)
         {
-            if (_popupLayer != null)
-            {
-                return;
-            }
+            if (_popupLayer != null) return;
 
             _popupLayer = new GauntletLayer(200);
 
             if (openedPopup is PartyUpgradeTroopVM)
-            {
                 _popupMovie = _popupLayer.LoadMovie("PSEUpgradePopup", _upgradeTroopsVM);
-
-            }
             else if (openedPopup is PartyRecruitTroopVM)
-            {
                 _popupMovie = _popupLayer.LoadMovie("PSERecruitPopup", _recruitPrisonerVm);
-            }
 
             _parentScreen.AddLayer(_popupLayer);
             _popupLayer.InputRestrictions.SetInputRestrictions();
@@ -206,10 +282,7 @@ namespace PartyScreenEnhancements.ViewModel
 
         public bool IsHotKeyPressed(string hotkey)
         {
-            if (_settingLayer != null)
-            {
-                return _settingLayer.Input.IsHotKeyReleased(hotkey);
-            }
+            if (_settingLayer != null) return _settingLayer.Input.IsHotKeyReleased(hotkey);
 
             return false;
         }
@@ -217,101 +290,10 @@ namespace PartyScreenEnhancements.ViewModel
         public void OnEnableChange(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
         {
             if (propertyChangedEventArgs.PropertyName.Equals(nameof(PartyScreenConfig.ExtraSettings
-                .ShouldShowCompletePartyNumber)))
+                    .ShouldShowCompletePartyNumber)))
             {
                 Traverse.Create(_partyVM).Method("RefreshPartyInformation").GetValue();
                 UpdateLabel(null);
-            }
-        }
-
-        [DataSourceProperty]
-        public bool AnyOtherPopupOpen
-        {
-            get => _partyVM.IsAnyPopUpOpen;
-        }
-
-        [DataSourceProperty]
-        public HintViewModel SettingHint
-        {
-            get => _settingsHint;
-            set
-            {
-                if (value != _settingsHint)
-                {
-                    _settingsHint = value;
-                    OnPropertyChanged(nameof(SettingHint));
-                }
-            }
-        }
-
-        [DataSourceProperty]
-        public UpgradeAllTroopsVM UpgradeAllTroops
-        {
-            get => _upgradeTroopsVM;
-            set
-            {
-                if (value != _upgradeTroopsVM)
-                {
-                    _upgradeTroopsVM = value;
-                    OnPropertyChanged(nameof(UpgradeAllTroops));
-                }
-            }
-        }
-
-        [DataSourceProperty]
-        public RecruitPrisonerVM RecruitAllPrisoners
-        {
-            get => _recruitPrisonerVm;
-            set
-            {
-                if (value != _recruitPrisonerVm)
-                {
-                    _recruitPrisonerVm = value;
-                    OnPropertyChanged(nameof(RecruitAllPrisoners));
-                }
-            }
-        }
-
-        [DataSourceProperty]
-        public SortAllTroopsVM SortAllTroops
-        {
-            get => _sortTroopsVM;
-            set
-            {
-                if (value != _sortTroopsVM)
-                {
-                    _sortTroopsVM = value;
-                    OnPropertyChanged(nameof(SortAllTroops));
-                }
-            }
-        }
-
-
-        [DataSourceProperty]
-        public UnitTallyVM UnitTally
-        {
-            get => _unitTallyVm;
-            set
-            {
-                if (value != _unitTallyVm)
-                {
-                    _unitTallyVm = value;
-                    OnPropertyChanged(nameof(UnitTally));
-                }
-            }
-        }
-
-        [DataSourceProperty]
-        public TransferWoundedTroopsVM TransferWoundedTroops
-        {
-            get => _transferWounded;
-            set
-            {
-                if (value != _transferWounded)
-                {
-                    _transferWounded = value;
-                    OnPropertyChanged(nameof(TransferWoundedTroops));
-                }
             }
         }
     }

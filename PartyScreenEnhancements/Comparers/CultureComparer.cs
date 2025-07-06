@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using TaleWorlds.CampaignSystem.ViewModelCollection;
 using TaleWorlds.CampaignSystem.ViewModelCollection.Party;
 using TaleWorlds.Core;
 
@@ -8,9 +7,9 @@ namespace PartyScreenEnhancements.Comparers
 {
     public class CultureComparer : PartySort
     {
-        public CultureComparer(PartySort equalSorter, bool descending, List<string> customSort = null) : base(equalSorter, @descending, customSort)
+        public CultureComparer(PartySort equalSorter, bool descending, List<string> customSort = null) : base(
+            equalSorter, descending, customSort)
         {
-
         }
 
         public CultureComparer()
@@ -48,8 +47,8 @@ namespace PartyScreenEnhancements.Comparers
 
             foreach (var setting in CustomSettingsList)
             {
-                bool xMatch = xName.Equals(setting);
-                bool yMatch = yName.Equals(setting);
+                var xMatch = xName.Equals(setting);
+                var yMatch = yName.Equals(setting);
 
                 if (xMatch && !yMatch) return Descending ? -1 : 1;
                 if (yMatch && !xMatch) return Descending ? 1 : -1;
@@ -63,10 +62,7 @@ namespace PartyScreenEnhancements.Comparers
             base.FillCustomList();
             var cultures = Enum.GetValues(typeof(CultureCode));
 
-            foreach (CultureCode cultureCode in cultures)
-            {
-                CustomSettingsList.Add(cultureCode.ToString());
-            }
+            foreach (CultureCode cultureCode in cultures) CustomSettingsList.Add(cultureCode.ToString());
             CustomSettingsList.Sort(StringComparer.CurrentCulture);
             CustomSettingsList.Reverse();
         }
