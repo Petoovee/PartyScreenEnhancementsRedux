@@ -33,6 +33,15 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="0Harmony">
+      <HintPath>..\..\..\..\..\.local\share\Steam\steamapps\workshop\content\261550\2859188632\bin\Win64_Shipping_Client\0Harmony.dll</HintPath>
+    </Reference>
+    <Reference Include="Bannerlord.Harmony">
+      <HintPath>..\..\..\..\..\.local\share\Steam\steamapps\workshop\content\261550\2859188632\bin\Win64_Shipping_Client\Bannerlord.Harmony.dll</HintPath>
+    </Reference>
+    <Reference Include="SandBox.GauntletUI">
+      <HintPath>..\..\..\..\..\.local\share\Steam\steamapps\common\Mount &amp; Blade II Bannerlord\Modules\SandBox\bin\Win64_Shipping_Client\SandBox.GauntletUI.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Runtime.InteropServices.RuntimeInformation" />
@@ -100,6 +109,9 @@
     </Reference>
     <Reference Include="TaleWorlds.MountAndBlade.Diamond">
       <HintPath>..\..\..\..\..\.local\share\Steam\steamapps\common\Mount &amp; Blade II Bannerlord\bin\Win64_Shipping_Client\TaleWorlds.MountAndBlade.Diamond.dll</HintPath>
+    </Reference>
+    <Reference Include="TaleWorlds.MountAndBlade.GauntletUI">
+      <HintPath>..\..\..\..\..\.local\share\Steam\steamapps\common\Mount &amp; Blade II Bannerlord\Modules\Native\bin\Win64_Shipping_Client\TaleWorlds.MountAndBlade.GauntletUI.dll</HintPath>
     </Reference>
     <Reference Include="TaleWorlds.MountAndBlade.GauntletUI.Widgets">
       <HintPath>..\..\..\..\..\.local\share\Steam\steamapps\common\Mount &amp; Blade II Bannerlord\bin\Win64_Shipping_Client\TaleWorlds.MountAndBlade.GauntletUI.Widgets.dll</HintPath>
