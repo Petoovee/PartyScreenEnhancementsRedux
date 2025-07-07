@@ -39,7 +39,7 @@ namespace PartyScreenEnhancements.Patches
         [HarmonyPatch("ExecuteDone")]
         public static bool PrefixDone(ref PartyVM __instance)
         {
-            if (PartyScreenConfig.ExtraSettings.UpgradeOnDone)
+            if (PartyScreenConfig.ExtraSettings.UpgradeOnDone && __instance.IsUpgradePopUpDisabled == false)
                 PartyEnhancementLayerPatch.enhancementVm.UpgradeAllTroops.UpgradeAllTroopsPath(0);
 
             return true;
